@@ -1,0 +1,7 @@
+dsconfig:
+  dataUrl: https://data.gov.in/node/86943/datastore/export/csv
+
+amazon:
+  endpoint: http://localhost:8000/
+  accessKey: BALABHASKAR
+  secretkey: P@$$w0rd
