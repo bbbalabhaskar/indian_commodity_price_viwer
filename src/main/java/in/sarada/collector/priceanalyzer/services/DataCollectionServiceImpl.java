@@ -34,14 +34,7 @@ public class DataCollectionServiceImpl implements DataCollectionService {
     @Override
     @Scheduled(fixedRate = 86400000)
     public void initCollection() {
-        logger.info("-----Clearing all the data-----");
-        try{
-            itemInfoRepository.deleteAll();
-        } catch(ResourceNotFoundException ex) {
-            logger.error("Unable to delete data", ex);
-        }
 
-        logger.info("-----Dynamo DB data clearance completed/aborted-----");
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
@@ -53,6 +46,17 @@ public class DataCollectionServiceImpl implements DataCollectionService {
     }
 
     @Override
+    @Scheduled(fixedDelay = 7 * 24 * 60 * 60 * 1000)
+    public void clearData() {
+        logger.info("-----Clearing all the data-----");
+        try {
+            itemInfoRepository.deleteAll();
+        } catch (ResourceNotFoundException ex) {
+            logger.error("Unable to delete data", ex);
+        }
+    }
+
+    @Override
     public Iterable<ItemInfo> getAll() {
         return itemInfoRepository.findAll();
     }
@@ -60,6 +64,56 @@ public class DataCollectionServiceImpl implements DataCollectionService {
     @Override
     public Iterable<ItemInfo> getByStateName(String stateName) {
         return itemInfoRepository.findAllByState(stateName);
+    }
+
+    /**
+     * Finds all the items in a given state and district combination
+     *
+     * @param stateName name of state
+     * @param district  name of district
+     * @return Iterable<ItemInfo>
+     */
+    @Override
+    public Iterable<ItemInfo> findAllByStateAndDistrict(String stateName, String district) {
+        return itemInfoRepository.findAllByStateAndDistrict(stateName, district);
+    }
+
+    /**
+     * Finds all the commodity with given name and in a given state
+     *
+     * @param stateName name of the state
+     * @param commodity name of the commodity
+     * @return Iterable<ItemInfo>
+     */
+    @Override
+    public Iterable<ItemInfo> findAllByStateAndCommodity(String stateName, String commodity) {
+        return itemInfoRepository.findAllByStateAndCommodity(stateName, commodity);
+    }
+
+    /**
+     * Finds all the Market level commodity information
+     *
+     * @param market    name of the market
+     * @param commodity name of the commodity
+     * @return Iterable<ItemInfo>
+     */
+    @Override
+    public Iterable<ItemInfo> findAllByMarketAndCommodity(String market, String commodity) {
+        return itemInfoRepository.findAllByMarketAndCommodity(market, commodity);
+    }
+
+    /**
+     * Finds all the items with given configuration
+     *
+     * @param stateName state name
+     * @param district  district name
+     * @param market    market name
+     * @param commodity item name
+     * @return Iterable<ItemInfo>
+     */
+    @Override
+    public Iterable<ItemInfo> findAllByStateAndDistrictAndMarketAndCommodity(String stateName, String district, String market, String commodity) {
+        return itemInfoRepository.findAllByStateAndDistrictAndMarketAndCommodity(stateName, district, market, commodity);
     }
 
 }
