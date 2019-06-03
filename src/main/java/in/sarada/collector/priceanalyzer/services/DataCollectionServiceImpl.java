@@ -32,7 +32,7 @@ public class DataCollectionServiceImpl implements DataCollectionService {
     private Logger logger = LoggerFactory.getLogger(DataCollectionServiceImpl.class);
 
     @Override
-    @Scheduled(fixedRate = 86400000)
+    //@Scheduled(fixedRate = 86400000)
     public void initCollection() {
 
         JobParameters params = new JobParametersBuilder()
